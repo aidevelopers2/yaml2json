@@ -1,0 +1,11 @@
+{
+  "name": "yaml2json-core",
+  "private": true,
+  "version": "1.0.0",
+  "description": "The YAML ↔ JSON conversion core behind yaml2json.com — multi-document support, real parse errors, client-side friendly.",
+  "type": "module",
+  "main": "convert.mjs",
+  "scripts": { "test": "node --test" },
+  "license": "MIT",
+  "dependencies": { "js-yaml": "^4.1.0" }
+}
