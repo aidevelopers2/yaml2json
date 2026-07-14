@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>yaml2json — YAML ⇄ JSON in your browser</title>
+<meta name="description" content="Open-source YAML to JSON converter. Runs entirely client-side — nothing is uploaded.">
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: #0d1117; color: #e6edf3; min-height: 100vh; display: flex; flex-direction: column; }
+  header { padding: 14px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #21262d; flex-wrap: wrap; }
+  h1 { font-size: 16px; font-weight: 600; }
+  h1 span { color: #7ee787; }
+  .badge { font-size: 11px; color: #8b949e; border: 1px solid #30363d; border-radius: 999px; padding: 2px 10px; }
+  header a { color: #58a6ff; font-size: 12px; text-decoration: none; margin-left: auto; }
+  main { flex: 1; display: grid; grid-template-columns: 1fr 44px 1fr; gap: 0; padding: 16px 20px; max-width: 1400px; width: 100%; margin: 0 auto; }
+  textarea { width: 100%; height: calc(100vh - 130px); min-height: 320px; background: #161b22; color: #e6edf3; border: 1px solid #30363d; border-radius: 8px; padding: 12px; font: 13px/1.5 ui-monospace, Menlo, monospace; resize: none; outline: none; }
+  textarea:focus { border-color: #58a6ff; }
+  .mid { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+  button { background: #21262d; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px; padding: 8px 10px; cursor: pointer; font-size: 13px; }
+  button:hover { background: #30363d; }
+  .err { color: #f85149; font-size: 12px; padding: 6px 20px; white-space: pre-wrap; min-height: 28px; }
+  @media (max-width: 800px) { main { grid-template-columns: 1fr; } .mid { flex-direction: row; } textarea { height: 38vh; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>yaml<span>2</span>json</h1>
+  <span class="badge">client-side only · nothing uploaded</span>
+  <a href="https://github.com/aidevelopers2/yaml2json">source (MIT)</a>
+</header>
+<main>
+  <textarea id="yaml" spellcheck="false" placeholder="# paste YAML here&#10;name: example&#10;items:&#10;  - one&#10;  - two"></textarea>
+  <div class="mid">
+    <button id="toJson" title="YAML → JSON">→</button>
+    <button id="toYaml" title="JSON → YAML">←</button>
+    <button id="copy" title="Copy output">⧉</button>
+  </div>
+  <textarea id="json" spellcheck="false" placeholder='// JSON appears here (or paste JSON and hit ←)'></textarea>
+</main>
+<div class="err" id="err"></div>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const err = (m) => { $("err").textContent = m || ""; };
+  $("toJson").onclick = () => {
+    err();
+    try {
+      const docs = jsyaml.loadAll($("yaml").value);
+      $("json").value = JSON.stringify(docs.length === 1 ? docs[0] : docs, null, 2);
+    } catch (e) { err(e.message); }
+  };
+  $("toYaml").onclick = () => {
+    err();
+    try { $("yaml").value = jsyaml.dump(JSON.parse($("json").value), { lineWidth: 100 }); }
+    catch (e) { err(e.message); }
+  };
+  $("copy").onclick = () => navigator.clipboard.writeText($("json").value || $("yaml").value);
+  // convert as you type (debounced)
+  let t; $("yaml").addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => $("toJson").click(), 400); });
+</script>
+</body>
+</html>

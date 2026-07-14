@@ -10,6 +10,12 @@ Every online YAML converter we tried either sent the file to a server or choked 
 - **Both directions** — JSON → YAML too
 - Client-side friendly: no Node APIs, bundles clean
 
+## Run it
+
+Open [index.html](./index.html) locally, use the [hosted demo on GitHub Pages](https://aidevelopers2.github.io/yaml2json/), or the full version at [yaml2json.com](https://yaml2json.com).
+
+The whole app is one HTML file. No build, no server, no tracking.
+
 ## Use
 ```js
 import { yamlToJson, jsonToYaml } from "./convert.mjs";
